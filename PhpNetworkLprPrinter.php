@@ -45,6 +45,15 @@ class PhpNetworkLprPrinter{
 	 * @since	1.0
 	 */
 	var $_username = "PhpNetworkLprPrinter";
+
+        /**
+         * Queue for printer
+         *
+         * @var         string
+         * @access      protected
+         * @since       1.0
+         */
+	var $_queue;
 	
 	/**
 	 * Error number if connection fails
@@ -78,11 +87,13 @@ class PhpNetworkLprPrinter{
 	 *
 	 * @param	string	The printer's host
 	 * @param	integer	The printer's port
+         * @param       string  The printer's queue
 	 * @since	1.0
 	 */
-	public function __construct($host, $port=515) {
+	public function __construct($host, $port=515, $queue="defaultQueue") {
 		$this->_host = $host;
 		$this->_port = $port;
+		$this->_queue = $queue;
 	}
    
 	/**
@@ -188,11 +199,11 @@ class PhpNetworkLprPrinter{
 	private function makecfA($jobid){
 		$this->setMessage("Setting cfA control String");
 			
-		$hostname = $_SERVER['REMOTE_ADDR'];
+		$hostname = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR']:getHostByName(getHostName());
 		$cfa  = "";
 		$cfa .= "H" . $hostname . "\n"; //hostname
 		$cfa .= "P" . $this->_username . "\n"; //user
-		$cfA .= "fdfA" + $jobid + $hostname + "\n";
+		$cfa .= "fdfA" + $jobid + $hostname + "\n";
 		//TODO: Add more parameters. See http://www.faqs.org/rfcs/rfc1179.html 
 		
 		return $cfa;
@@ -246,7 +257,7 @@ class PhpNetworkLprPrinter{
 	public function printText($text=""){
 		
 		//Initial data			
-		$queue="defaultQueue"; //TODO: Change default queue
+		$queue=$this->_queue;
 		$jobid=001; //TODO: Autoincrement $jobid
 		
 		//Print any waiting job
