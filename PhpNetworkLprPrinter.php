@@ -152,7 +152,7 @@ class PhpNetworkLprPrinter{
 	 * @since	1.0
  	 */ 
 	public function getErrNo(){
-		return $this->_errNo;
+		return $this->_error_number;
 	}
 
 	/**
@@ -163,7 +163,7 @@ class PhpNetworkLprPrinter{
 	 * @since	1.0
  	 */	 
 	public function getErrStr(){
-		return $this->_errStr;
+		return $this->_error_msg;
 	}	
 
 	/**
